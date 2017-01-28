@@ -24,6 +24,8 @@ input{
 	border: #000 1px solid;
 	border-radius: 3px;
 	height: 24px;
+	width: auto;
+	margin-left: 4px;
 }
 #header{
 	text-align: center;
@@ -45,7 +47,7 @@ input{
 	text-align: center;
 }
 #theChar{
-	font-size: 50px;
+	font-size: 55px;
 }
 div[id^="info"]{
 	margin-top: 15px;
@@ -54,6 +56,9 @@ div[id^="info"]{
 .options{
 	display: block;
 	margin: 15px auto;
+}
+.submit{
+	margin-right: 4px;
 }
 .btn-sm{
 	border: 1px solid #171d22;
@@ -70,8 +75,10 @@ div[id^="info"]{
 	display: inline-block;
 }
 .card{
-	border: 1px solid #000;
+	border: 1px solid #171d22;
 	border-radius: 10px;
+	width: auto;
+	height: auto;
 }
 .userInput{
 	display: none;
@@ -86,7 +93,7 @@ div[id^="info"]{
 		http://stackoverflow.com/questions/27211799/angular-ng-repeat-add-bootstrap-row-every-3-or-4-cols
 		http://stackoverflow.com/questions/23264789/angularjs-ng-repeat-to-assign-generate-a-new-unique-id
 		http://stackoverflow.com/questions/3364279/has-anyone-parsed-wiktionary
-		http://jsfiddle.net/karlb/PxfrJ/11/
+		http://jsfiddle.net/karlb/PxfrJ/11/ - this is cool!
 		http://stackoverflow.com/questions/22618414/add-bootstrap-rows-during-ng-repeat
 		https://en.wikisource.org/wiki/Translation:List_of_Frequently_Used_Characters_in_Modern_Chinese
 	-->
@@ -123,7 +130,7 @@ div[id^="info"]{
 						<div class='char'>
 							<h2 id='theChar'> {{ char.value }}</h2> <!-- gets random char from data -->
 							<br>
-							<input id="{{'answer' + idCount}}" type='text' placeholder=' enter response here' /> <button ng-attr-id="{{ 'btnInput' + idCount }}" ng-click='evaluateInput($event)' class='btn-sm'>enter</button>
+							<input id="{{'answer' + idCount}}" type='text' placeholder=' enter response here' /> <button ng-attr-id="{{ 'btnInput' + idCount }}" ng-click='evaluateInput($event)' class='submit btn-sm'>enter</button>
 						</div>
 						
 						<h2 ng-attr-id="{{ 'userInput' + idCount}}"></h2>
