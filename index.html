@@ -231,7 +231,7 @@ app.controller('quizlet1', ['$scope', '$http', function($scope, $http){
 		//console.log(characters)
 		for(var i = 0; i < characters.length; i++){
 			var ch = characters[i].id;
-			if(ch[ch.length - 1] === id[id.length - 1]){
+			if(ch.match(/[0-9]+/g)[0] === id.match(/[0-9]+/g)[0]){
 				//when a char is shown initially, the info section is NOT SET to display: none. rather, it has nothing. 
 				if(characters[i].style.display === "none" || !characters[i].style.display){
 					characters[i].style.display = "block";
@@ -245,12 +245,12 @@ app.controller('quizlet1', ['$scope', '$http', function($scope, $http){
 	//evaluate user's input for answer for pinyin or definition
 	$scope.evaluateInput = function(e){
 		var answers = document.querySelectorAll("*[id^='answer']");
-		var thisIdNum = e.target.id[e.target.id.length - 1]; //just get the index num of the character clicked on
+		var thisIdNum = (e.target.id).match(/[0-9]+/g)[0]; //just get the index num of the character clicked on
 		var response = document.getElementById('userInput' + thisIdNum);
 		for(var i = 0; i < answers.length; i++){
 			var ch = answers[i];
 			//find the answer corresponding to the current character
-			if(ch.id[ch.id.length - 1] === thisIdNum){
+			if(ch.id.match(/[0-9]+/g)[0] === thisIdNum){
 			
 				//no entry in input field?
 				if(ch.value === ""){
