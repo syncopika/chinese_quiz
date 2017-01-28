@@ -1,0 +1,298 @@
+<!doctype html>
+
+<html>
+
+<head>
+	<title> chinese quiz </title>
+	<meta charset="utf-8">
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+
+<style>
+body{
+	background-color: #d6dde3;
+	color: #171d22;
+}
+option{
+	color: #d6eae3;
+}
+select, option{
+	color: #000;
+}
+input{
+	border: #000 1px solid;
+	border-radius: 3px;
+	height: 24px;
+}
+#header{
+	text-align: center;
+	font-family: 'MingLiU';
+}
+#quizlet1{
+	display: block;
+	margin: 0 auto;
+	text-align: center;
+	font-family: 'ms gothic';
+}
+#quizlet1 li{
+	display: inline-block;
+	list-style: none;
+}
+#char{
+	display: block;
+	margin: 0 auto;
+	text-align: center;
+}
+#theChar{
+	font-size: 50px;
+}
+div[id^="info"]{
+	margin-top: 15px;
+	display: none;
+}	
+.options{
+	display: block;
+	margin: 15px auto;
+}
+.btn-sm{
+	border: 1px solid #171d22;
+	color: #000;
+}
+.footer{
+	height: 80px;
+}
+.row{
+	text-align:center;
+}
+.column{
+	width: 25%;
+	display: inline-block;
+}
+.card{
+	border: 1px solid #000;
+	border-radius: 10px;
+}
+.userInput{
+	display: none;
+}
+</style>
+
+<body>
+
+	<!--
+		1. use angular to set up different kinds of quizzes
+		2. use python or ruby again to instead get info on the most common characters 
+		http://stackoverflow.com/questions/27211799/angular-ng-repeat-add-bootstrap-row-every-3-or-4-cols
+		http://stackoverflow.com/questions/23264789/angularjs-ng-repeat-to-assign-generate-a-new-unique-id
+		http://stackoverflow.com/questions/3364279/has-anyone-parsed-wiktionary
+		http://jsfiddle.net/karlb/PxfrJ/11/
+		http://stackoverflow.com/questions/22618414/add-bootstrap-rows-during-ng-repeat
+		https://en.wikisource.org/wiki/Translation:List_of_Frequently_Used_Characters_in_Modern_Chinese
+	-->
+	
+	<div class='container'>
+		
+		<div id='header'>
+			<h1> chinese quiz app (mandarin) <h1>
+			<p> test your knowledge of chinese characters! </p>
+		</div>
+		
+		<hr>
+		
+		<div ng-app='chineseQuiz'>
+		<!-- this is where the content changes -->
+			<div id='quizlet1' ng-controller='quizlet1'>
+				<!-- how about make an option that lets the user choose how many characters to be quizzed on at one time? i.e. range 1 to 9 chars at a time -->
+				<h3> choose what to test for </h3>
+				<ul>
+					<li><input type='radio' ng-model='testChoice' value='pinyin'>pinyin</li>
+					<li><input type='radio' ng-model='testChoice' value='definition'>definition</li>
+					<li>
+						<select ng-options="options.indexOf(selectedOption)+1 as selectedOption for selectedOption in options" ng-model="selectedOption" ng-change="getCharArray()">
+						</select>
+						<label> how many characters? </label>
+					</li>
+				</ul>
+				<button class='reset btn-sm' ng-click='getCharArray()'>reset character</button>
+
+				<h3><b> what is the {{testChoice}} for: </b></h3>
+				
+				<div class='row' ng-repeat="row in randomChars"> 
+					<div class='column card' ng-repeat="char in row" ng-init='idCount = keepCount()'> <!-- inner ng loop creates a 'card' for each character. 4 per row max. -->
+						<div class='char'>
+							<h2 id='theChar'> {{ char.value }}</h2> <!-- gets random char from data -->
+							<br>
+							<input id="{{'answer' + idCount}}" type='text' placeholder=' enter response here' /> <button ng-attr-id="{{ 'btnInput' + idCount }}" ng-click='evaluateInput($event)' class='btn-sm'>enter</button>
+						</div>
+						
+						<h2 ng-attr-id="{{ 'userInput' + idCount}}"></h2>
+						
+						<div id="{{'info' + idCount}}">
+							<p ng-attr-id="{{'pinyin' + idCount }}" ng-model='randomChar'><b> pinyin: </b> {{ char.pinyin }} </p>
+							<p ng-attr-id="{{'definition' + idCount }}" ng-model='randomChar'><b> definition: </b>{{ char.definition }} </p>
+						</div>
+						
+						<div class='row'>
+							<div class='options'>
+								<button ng-attr-id="{{'btn' + idCount}}" class='btn-sm' ng-click='showInfo($event)'>display answers</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			
+			<!-- this will be another kind of quiz option ?
+			<div id='quizlet2'>
+				<div class='row'>
+				
+				</div>
+			</div>
+			 -->
+		</div>
+		
+	</div>
+	
+	<div class='footer'>
+	</div>
+
+</body>
+
+
+<script>
+
+var app = angular.module('chineseQuiz', []);
+app.controller('quizlet1', ['$scope', '$http', function($scope, $http){
+	
+	//get JSON data
+	$scope.data = [];
+	$scope.randomChars = []; //this is a 2D ARRAY - so it will be easier to make rows and columns depending on num characters specified
+	
+	$http.get("chineseChars.json").then(function(response){
+		$scope.data = response.data;
+		$scope.randomChars.push([getRandomChar($scope.data)]);
+	});
+	
+	//options for how many characters to show 
+	$scope.options = ["1","2","3","4","5","6","7","8","9","10","11","12"];
+	$scope.selectedOption = 1; //no 0-indexing!
+	
+	//default choice for quiz can be pinyin
+	$scope.testChoice = "pinyin";
+	
+	//when a new number of characters is selected, generate a new random list of characters with a length of that new number
+	$scope.getCharArray = function(){
+		//clear current array
+		$scope.randomChars = [];
+		//reset id counter
+		$scope.idCount = 0;
+		var checkArray = []; //1d array to check for dupes
+		
+		var counter = 0; //keep track of how many characters has been added
+		var rowLimit = $scope.selectedOption > 4 ? Math.floor($scope.selectedOption / 4) : 1;
+		for(var i = 0; i <= rowLimit; i++){
+			var row = [];
+			for(var j = 0; j < 4; j++){
+				if(counter === $scope.selectedOption){
+					break;
+				}
+				var newChar = getRandomChar($scope.data);
+				//if checkArray already has newChar, keep looking for a new one
+				while(checkArray.indexOf(newChar.value) >= 0){
+					newChar = getRandomChar($scope.data);
+				}
+				checkArray.push(newChar.value);
+				row.push(newChar);
+				counter++;
+			}
+			$scope.randomChars.push(row);
+		}
+	}
+	
+	//when iterating, assign each character a new id number! this will help keep track of each char in the array 
+	//($index does not help because it starts at 0 again for each row). idCount keeps track
+	$scope.idCount = 0;
+	$scope.keepCount = function(){
+		return $scope.idCount++;
+	}
+	
+	//show info for character on corresponding character's 'display info' button click
+	$scope.showInfo = function(e){
+		var characters = document.querySelectorAll("*[id^='info']");
+		var id = (e.target).id;
+		//console.log(characters)
+		for(var i = 0; i < characters.length; i++){
+			var ch = characters[i].id;
+			if(ch[ch.length - 1] === id[id.length - 1]){
+				//when a char is shown initially, the info section is NOT SET to display: none. rather, it has nothing. 
+				if(characters[i].style.display === "none" || !characters[i].style.display){
+					characters[i].style.display = "block";
+				}else{
+					characters[i].style.display = "none";
+				}
+			}
+		}
+	}
+	
+	//evaluate user's input for answer for pinyin or definition
+	$scope.evaluateInput = function(e){
+		var answers = document.querySelectorAll("*[id^='answer']");
+		var thisIdNum = e.target.id[e.target.id.length - 1]; //just get the index num of the character clicked on
+		var response = document.getElementById('userInput' + thisIdNum);
+		for(var i = 0; i < answers.length; i++){
+			var ch = answers[i];
+			//find the answer corresponding to the current character
+			if(ch.id[ch.id.length - 1] === thisIdNum){
+			
+				//no entry in input field?
+				if(ch.value === ""){
+					return; //just don't do anything 
+				}
+			
+				//is it pinyin or definition?
+				if($scope.testChoice === 'pinyin'){
+					//evaluate answer from input
+					var pinyinAnswer = document.getElementById('pinyin' + thisIdNum).textContent;
+					//you really shouldn't evaluate based on indexOf. needs to match exactly!!
+					if(pinyinAnswer.indexOf(ch.value) >= 0){                                            
+						//show "CORRECT!" in view
+						response.textContent = "CORRECT! ^_^";
+						response.style.color = "#23e000";
+					}else{
+						response.textContent = "INCORRECT";
+						response.style.color = "#e60008";
+					}
+					response.style.display = "block";
+				}else{
+					//evaluate answer from input
+					var defAnswer = document.getElementById('definition' + thisIdNum).textContent;
+					if(defAnswer.indexOf(ch.value) >= 0){
+						//show "CORRECT!" in view
+						response.textContent = "CORRECT! ^_^";
+						response.style.color = "#23e000";
+					}else{
+						response.textContent = "INCORRECT";
+						response.style.color = "#e60008";
+					}
+					response.style.display = "block";
+				}
+			}
+		}
+	}
+	
+}]);
+
+
+function getRandomChar(data){
+	var randIndex = Math.floor(Math.random()*data.length);
+	return data[randIndex];
+}
+
+
+</script>
+
+</html>
+
+
+
