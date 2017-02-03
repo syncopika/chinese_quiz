@@ -5,12 +5,18 @@
 <head>
 	<title> chinese quiz </title>
 	<meta charset="utf-8">
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+	<script src="lib/angular-route.min.js"></script>
+	<script src="js/app.js"></script>
+	<script src="js/controllers.js"></script>
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+	<script src='lib/jquery-ui.min.js'></script>
 </head>
 
 <style>
 body{
+	font-family: 'MingLiU';
 	background-color: #d6dde3;
 	color: #171d22;
 }
@@ -37,7 +43,6 @@ select{
 }
 #header{
 	text-align: center;
-	font-family: 'MingLiU';
 }
 #quizlet1{
 	display: block;
@@ -93,6 +98,16 @@ div[id^="info"]{
 .userInput{
 	display: none;
 }
+#nav{
+	width: 100%;
+	text-align: center;
+}
+
+@media screen and (max-width: 990px) and (min-width: 760px){
+	.column{
+		width: 33%;
+	}
+}
 </style>
 
 <body ng-app='chineseQuiz'>
@@ -117,59 +132,14 @@ div[id^="info"]{
 		
 		<hr>
 		
-		<div>
+		<div id='nav'>
+			<p><a href='#/quizlet1'><b>quizlet 1<b></a>  |  <a href='#/quizlet2'><b>quizlet 2</b></a></p>
+		</div>
+		
+		<div id='content' ng-view>
+		
 		<!-- this is where the content changes -->
-			<div id='quizlet1' ng-controller='quizlet1'>
-				<!-- how about make an option that lets the user choose how many characters to be quizzed on at one time? i.e. range 1 to 9 chars at a time -->
-				<h3> choose what to test for </h3>
-				<ul>
-					<li><input type='radio' ng-model='testChoice' value='pinyin'>pinyin</li>
-					<li><input type='radio' ng-model='testChoice' value='definition'>definition</li>
-					<li>|</li>
-					<li>
-						<label> how many characters? </label>
-						<select ng-options="options.indexOf(selectedOption)+1 as selectedOption for selectedOption in options" ng-model="selectedOption" ng-change="getCharArray()">
-						</select>
-					</li>
-				</ul>
-				<button class='reset btn-sm' ng-click='getCharArray()'>reset character</button>
-
-				<h3 ng-cloak><b> what is the {{testChoice}} for: </b></h3>
-				
-				<br>
-				
-				<div class='row' ng-repeat="row in randomChars" ng-cloak> 
-					<div class='column card' ng-repeat="char in row" ng-init='idCount = keepCount()'> <!-- inner ng loop creates a 'card' for each character. 4 per row max. -->
-						<div class='char'>
-							<h2 id='theChar'> {{ char.value }}</h2> <!-- gets random char from data -->
-							<br>
-							<input id="{{'answer' + idCount}}" type='text' placeholder=' enter response here' /> <button ng-attr-id="{{ 'btnInput' + idCount }}" ng-click='evaluateInput($event)' class='submit btn-sm'>enter</button>
-						</div>
-						
-						<h2 ng-attr-id="{{ 'userInput' + idCount}}"></h2>
-						
-						<div id="{{'info' + idCount}}">
-							<p ng-attr-id="{{'pinyin' + idCount }}" ng-model='randomChar'><b> pinyin: </b> {{ char.pinyin }} </p>
-							<p ng-attr-id="{{'definition' + idCount }}" ng-model='randomChar'><b> definition: </b>{{ char.definition }} </p>
-						</div>
-						
-						<div class='row'>
-							<div class='options'>
-								<button ng-attr-id="{{'btn' + idCount}}" class='btn-sm' ng-click='showInfo($event)'>display answers</button>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-			</div>
 			
-			<!-- this will be another kind of quiz option ?
-			<div id='quizlet2'>
-				<div class='row'>
-				
-				</div>
-			</div>
-			 -->
 		</div>
 		
 	</div>
@@ -179,138 +149,6 @@ div[id^="info"]{
 
 </body>
 
-
-<script>
-
-var app = angular.module('chineseQuiz', []);
-app.controller('quizlet1', ['$scope', '$http', function($scope, $http){
-	
-	//get JSON data
-	$scope.data = [];
-	$scope.randomChars = []; //this is a 2D ARRAY - so it will be easier to make rows and columns depending on num characters specified
-	
-	$http.get("chineseChars.json").then(function(response){
-		$scope.data = response.data;
-		$scope.randomChars.push([getRandomChar($scope.data)]);
-	});
-	
-	//options for how many characters to show 
-	$scope.options = ["1","2","3","4","5","6","7","8","9","10","11","12"];
-	$scope.selectedOption = 1; //no 0-indexing!
-	
-	//default choice for quiz can be pinyin
-	$scope.testChoice = "pinyin";
-	
-	//when a new number of characters is selected, generate a new random list of characters with a length of that new number
-	$scope.getCharArray = function(){
-		//clear current array
-		$scope.randomChars = [];
-		//reset id counter
-		$scope.idCount = 0;
-		var checkArray = []; //1d array to check for dupes
-		
-		var counter = 0; //keep track of how many characters has been added
-		var rowLimit = $scope.selectedOption > 4 ? Math.floor($scope.selectedOption / 4) : 1;
-		for(var i = 0; i <= rowLimit; i++){
-			var row = [];
-			for(var j = 0; j < 4; j++){
-				if(counter === $scope.selectedOption){
-					break;
-				}
-				var newChar = getRandomChar($scope.data);
-				//if checkArray already has newChar, keep looking for a new one
-				while(checkArray.indexOf(newChar.value) >= 0){
-					newChar = getRandomChar($scope.data);
-				}
-				checkArray.push(newChar.value);
-				row.push(newChar);
-				counter++;
-			}
-			$scope.randomChars.push(row);
-		}
-	}
-	
-	//when iterating, assign each character a new id number! this will help keep track of each char in the array 
-	//($index does not help because it starts at 0 again for each row). idCount keeps track
-	$scope.idCount = 0;
-	$scope.keepCount = function(){
-		return $scope.idCount++;
-	}
-	
-	//show info for character on corresponding character's 'display info' button click
-	$scope.showInfo = function(e){
-		var characters = document.querySelectorAll("*[id^='info']");
-		var id = (e.target).id;
-		//console.log(characters)
-		for(var i = 0; i < characters.length; i++){
-			var ch = characters[i].id;
-			if(ch.match(/[0-9]+/g)[0] === id.match(/[0-9]+/g)[0]){
-				//when a char is shown initially, the info section is NOT SET to display: none. rather, it has nothing. 
-				if(characters[i].style.display === "none" || !characters[i].style.display){
-					characters[i].style.display = "block";
-				}else{
-					characters[i].style.display = "none";
-				}
-			}
-		}
-	}
-	
-	//evaluate user's input for answer for pinyin or definition
-	$scope.evaluateInput = function(e){
-		var answers = document.querySelectorAll("*[id^='answer']");
-		var thisIdNum = (e.target.id).match(/[0-9]+/g)[0]; //just get the index num of the character clicked on
-		var response = document.getElementById('userInput' + thisIdNum);
-		for(var i = 0; i < answers.length; i++){
-			var ch = answers[i];
-			//find the answer corresponding to the current character
-			if(ch.id.match(/[0-9]+/g)[0] === thisIdNum){
-			
-				//no entry in input field?
-				if(ch.value === ""){
-					return; //just don't do anything 
-				}
-			
-				//is it pinyin or definition?
-				if($scope.testChoice === 'pinyin'){
-					//evaluate answer from input
-					var pinyinAnswer = document.getElementById('pinyin' + thisIdNum).textContent;
-					//you really shouldn't evaluate based on indexOf. needs to match exactly!!
-					if(pinyinAnswer.indexOf(ch.value) >= 0){                                            
-						//show "CORRECT!" in view
-						response.textContent = "CORRECT! ^_^";
-						response.style.color = "#23e000";
-					}else{
-						response.textContent = "INCORRECT";
-						response.style.color = "#e60008";
-					}
-					response.style.display = "block";
-				}else{
-					//evaluate answer from input
-					var defAnswer = document.getElementById('definition' + thisIdNum).textContent;
-					if(defAnswer.indexOf(ch.value) >= 0){
-						//show "CORRECT!" in view
-						response.textContent = "CORRECT! ^_^";
-						response.style.color = "#23e000";
-					}else{
-						response.textContent = "INCORRECT";
-						response.style.color = "#e60008";
-					}
-					response.style.display = "block";
-				}
-			}
-		}
-	}
-	
-}]);
-
-
-function getRandomChar(data){
-	var randIndex = Math.floor(Math.random()*data.length);
-	return data[randIndex];
-}
-
-
-</script>
 
 </html>
 
