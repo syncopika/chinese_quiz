@@ -1,0 +1,106 @@
+<style>
+
+#box{
+	display: block;
+	margin: 0 auto;
+	text-align: center;
+	font-family: 'ms gothic';
+}
+#box li{
+	display: inline-block;
+	list-style: none;
+}
+
+.footer{
+	height: 80px;
+}
+.row{
+	text-align:center;
+}
+
+#main{
+	margin-top: 2%;
+}
+.left{
+	margin-bottom: 2%;
+}
+
+.char, .info{
+	border: 1px solid #000;
+	border-radius: 5px;
+}
+
+#info{
+	display: block;
+	margin: 0 auto;
+}
+#info p{
+	font-size: 18px;
+}
+
+
+</style>
+<section>
+	<!--
+		1. use angular to set up different kinds of quizzes
+		2. use python or ruby again to instead get info on the most common characters 
+		http://stackoverflow.com/questions/27211799/angular-ng-repeat-add-bootstrap-row-every-3-or-4-cols
+		http://stackoverflow.com/questions/23264789/angularjs-ng-repeat-to-assign-generate-a-new-unique-id
+		http://stackoverflow.com/questions/3364279/has-anyone-parsed-wiktionary
+		http://jsfiddle.net/karlb/PxfrJ/11/ - this is cool!
+		http://stackoverflow.com/questions/22618414/add-bootstrap-rows-during-ng-repeat
+		https://en.wikisource.org/wiki/Translation:List_of_Frequently_Used_Characters_in_Modern_Chinese
+	-->
+<div id='box' ng-controller='quizlet2'>
+<!-- this is where the content changes -->	
+		
+		<h3> choose what to test for </h3>
+		<ul>
+			<li><input type='radio' ng-model='testChoice' value='pinyin'>pinyin</li>
+			<li><input type='radio' ng-model='testChoice' value='definition'>definition</li>
+			<li>|</li>
+			<li>
+				<label> how many characters? </label>
+				<select ng-options="options.indexOf(selectedOption)+1 as selectedOption for selectedOption in options" ng-model="selectedOption" ng-change="getCharArrayRandomize()">
+				</select>
+			</li>
+		</ul>
+		<button class='reset btn-sm' ng-click='getCharArrayRandomize()'>reset character</button>
+	
+	<br>
+	
+	<div id='quizlet2'>
+		<br>
+		<h4><b>drag the characters on the left and match with the corresponding pinyin or definition!</b></h4> 
+		<h4><b>green means correct, red means incorrect! </b></h4>
+	
+		<div ng-cloak ng-repeat="pair in pairs" class='row' id='main'>
+			
+			<div class='col-xs-4 col-xs-offset-2 left'>
+				<div id='char' class="char">
+					<h1 ng-cloak> {{ pair[0].value }} </h1>
+				</div>
+			</div>
+			
+			<div class='col-xs-4'>
+			</div>
+			
+			<br>
+			<div class='col-xs-4 right'>
+				<div id='info' class='info' ng-model='testChoice'>
+					<p ng-cloak> {{ pair[1][testChoice] }} </p>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+
+</div>
+		
+		
+
+</section>
+
+
+
+

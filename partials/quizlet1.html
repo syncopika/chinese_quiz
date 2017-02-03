@@ -1,0 +1,47 @@
+<section>
+
+<div id='quizlet1' ng-controller='quizlet1'>
+
+	<h3> choose what to test for </h3>
+	<ul>
+		<li><input type='radio' ng-model='testChoice' value='pinyin'>pinyin</li>
+		<li><input type='radio' ng-model='testChoice' value='definition'>definition</li>
+		<li>|</li>
+		<li>
+			<label> how many characters? </label>
+			<select ng-options="options.indexOf(selectedOption)+1 as selectedOption for selectedOption in options" ng-model="selectedOption" ng-change="getCharArray()">
+			</select>
+		</li>
+	</ul>
+	<button class='reset btn-sm' ng-click='getCharArray()'>reset character</button>
+
+	<h3 ng-cloak><b> what is the {{testChoice}} for: </b></h3>
+	
+	<br>
+	
+	<div class='row' ng-repeat="row in randomChars" ng-cloak> 
+		<div class='column card' ng-repeat="char in row" ng-init='idCount = keepCount()'> <!-- inner ng loop creates a 'card' for each character. 4 per row max. -->
+			<div class='char'>
+				<h2 id='theChar'> {{ char.value }}</h2> <!-- gets random char from data -->
+				<br>
+				<input id="{{'answer' + idCount}}" type='text' placeholder=' enter response here' /> <button ng-attr-id="{{ 'btnInput' + idCount }}" ng-click='evaluateInput($event)' class='submit btn-sm'>enter</button>
+			</div>
+			
+			<h2 ng-attr-id="{{ 'userInput' + idCount}}"></h2> <!-- this is for displaying correct or incorrect -->
+			
+			<div id="{{'info' + idCount}}">
+				<p ng-attr-id="{{'pinyin' + idCount }}" ng-model='randomChar'><b> pinyin: </b> {{ char.pinyin }} </p>
+				<p ng-attr-id="{{'definition' + idCount }}" ng-model='randomChar'><b> definition: </b>{{ char.definition }} </p>
+			</div>
+			
+			<div class='row'>
+				<div class='options'>
+					<button ng-attr-id="{{'btn' + idCount}}" class='btn-sm' ng-click='showInfo($event)'>display answers</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+</section>
