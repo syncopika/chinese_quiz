@@ -35,6 +35,8 @@ controllers.controller('quizlet1', ['$scope', '$http', function($scope, $http){
 		var charLimit = 4;
 		if($(window).width() <= 990 && $(window).width() >= 760){
 			charLimit = 3;
+		}else if($(window).width() < 760){
+			charLimit = 2;
 		}
 		
 		var rowLimit = $scope.selectedOption > charLimit ? Math.floor($scope.selectedOption / charLimit) : 1;
