@@ -215,14 +215,14 @@ controllers.controller('quizlet2', ['$scope', '$http', function($scope, $http){
 						if(selectedChar === $scope.randomCharsInfo[i].value){	
 							if($scope.testChoice === "pinyin"){
 								if($scope.randomCharsInfo[i].pinyin === selectedInfo){
-									$(this).css('border', '2px solid #22D900');
+									$(this).parent().css('border', '2px solid #22D900');
 									ui.draggable[0].style.border = '2px solid #22D900';
 									//append that character to the droppable textContent
 									this.childNodes[1].textContent = selectedInfo + " | " + selectedChar;
 								}
 							}else{
 								if($scope.randomCharsInfo[i].definition === selectedInfo){
-									$(this).css('border', '2px solid #22D900');
+									$(this).parent().css('border', '2px solid #22D900');
 									ui.draggable[0].style.border = '2px solid #22D900';
 									this.childNodes[1].textContent = selectedInfo + " | " + selectedChar;
 								}
@@ -230,8 +230,8 @@ controllers.controller('quizlet2', ['$scope', '$http', function($scope, $http){
 						}else{
 							//if a proper match has not yet been found for a droppable, and an incorrect character
 							//is dragged 
-							if($(this).css("border-left-color") !== 'rgb(34, 217, 0)'){
-								$(this).css('border', '2px solid #B40210');
+							if($(this).parent().css("border-left-color") !== 'rgb(34, 217, 0)'){
+								$(this).parent().css('border', '2px solid #B40210');
 							}
 						}
 					}
