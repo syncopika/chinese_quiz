@@ -40,7 +40,7 @@ controllers.controller('quizlet1', ['$scope', '$http', function($scope, $http){
 		}
 		
 		var rowLimit = $scope.selectedOption > charLimit ? Math.floor($scope.selectedOption / charLimit) : 1;
-		for(var i = 0; i <= rowLimit; i++){
+		for(var i = 0; i < rowLimit; i++){
 			var row = [];
 			for(var j = 0; j < charLimit; j++){
 				if(counter === $scope.selectedOption){
