@@ -45,19 +45,17 @@
 
 <div id='box' ng-controller='quizlet2'>
 <!-- this is where the content changes -->	
-		
-		<h3> choose what to test for </h3>
-		<ul>
-			<li><input type='radio' ng-model='testChoice' value='pinyin'>pinyin</li>
-			<li><input type='radio' ng-model='testChoice' value='definition'>definition</li>
-			<li>|</li>
-			<li>
-				<label> how many characters? </label>
-				<select ng-options="options.indexOf(selectedOption)+1 as selectedOption for selectedOption in options" ng-model="selectedOption" ng-change="getCharArrayRandomize()">
-				</select>
-			</li>
-		</ul>
-		<button class='reset btn-sm' ng-click='getCharArrayRandomize()'>reset character</button>
+
+	<h3> choose what to test for </h3>
+
+	<p><input type='radio' ng-model='testChoice' value='pinyin'><label>pinyin</label>
+		<input type='radio' ng-model='testChoice' value='definition'><label>definition</label> |
+		<label> how many characters? </label>
+		<select ng-options="options.indexOf(selectedOption)+1 as selectedOption for selectedOption in options" ng-model="selectedOption" ng-change="getCharArrayRandomize()">
+		</select>
+	</p>
+
+	<button class='reset btn-sm' ng-click='getCharArrayRandomize()'>reset character</button>
 	
 	<br>
 	
