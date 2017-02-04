@@ -1,3 +1,49 @@
+<style>
+#quizlet1{
+	display: block;
+	margin: 0 auto;
+	text-align: center;
+	font-family: 'ms gothic';
+}
+#quizlet1 li{
+	display: inline-block;
+	list-style: none;
+}
+#char{
+	display: block;
+	margin: 0 auto;
+	text-align: center;
+}
+#theChar{
+	font-size: 55px;
+}
+div[id^="info"]{
+	margin-top: 15px;
+	display: none;
+}	
+.column{
+	width: 25%;
+	display: inline-block;
+}
+.card{
+	border: 1px solid #171d22;
+	border-radius: 10px;
+	width: auto;
+	height: auto;
+	padding: 4px;
+}
+.userInput{
+	display: none;
+}
+@media screen and (min-width: 960px){
+
+	#theChar{
+		font-size: 76px;
+	}
+
+}
+</style>
+
 <section>
 
 <div id='quizlet1' ng-controller='quizlet1'>
