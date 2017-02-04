@@ -183,6 +183,11 @@ controllers.controller('quizlet2', ['$scope', '$http', function($scope, $http){
 					newChar = getRandomChar($scope.data);
 				}
 				checkArray.push(newChar.value);
+			
+				//edit randomCharsInfo so that for definitions, semicolons are replaced with commas and a space.
+				//this will allow for text wrapping. use regex to replace all
+				newChar.definition = newChar.definition.replace(/;/g, ", ").trim();
+				
 				$scope.randomChars.push(newChar);
 				$scope.randomCharsInfo.push(newChar);
 		}	
@@ -191,7 +196,6 @@ controllers.controller('quizlet2', ['$scope', '$http', function($scope, $http){
 		$scope.setPairs($scope.randomChars, $scope.randomCharsInfo);
 		
 		//console.log($scope.randomCharsInfo);
-		
 		//every time a new option for number of characters to be shown changes,
 		//this makes sure characters are draggable
 		//interactive handling
@@ -228,8 +232,7 @@ controllers.controller('quizlet2', ['$scope', '$http', function($scope, $http){
 								}
 							}
 						}else{
-							//if a proper match has not yet been found for a droppable, and an incorrect character
-							//is dragged 
+							//if a proper match has not yet been found for a droppable, make it red-bordered
 							if($(this).parent().css("border-left-color") !== 'rgb(34, 217, 0)'){
 								$(this).parent().css('border', '2px solid #B40210');
 							}
