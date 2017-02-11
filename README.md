@@ -1,5 +1,5 @@
 # chinese_quiz
-a little Chinese character quiz application with angularJS 
+a little Chinese character quiz application with angularJS     
 current demo (still in prototype mode): https://syncopika.github.io/chinese_quiz/    
     
 the web scraping stuff I used is currently here: https://github.com/syncopika/jsProjects/tree/master/chineseQuiz    
