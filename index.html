@@ -19,10 +19,14 @@
 </head>
 
 <style>
-body{
+body, html{
 	font-family: 'MingLiU';
 	/*background-color: #9acaf4;*/
 	color: #171d22;
+	height: 100%;
+}
+.container-fluid{
+	height: 100%;
 }
 option{
 	color: #d6eae3;
@@ -78,6 +82,7 @@ select{
 }
 #leftBox{
 	text-align: center;
+	height: 100%;
 }
 #searchOption input{
 	display: inline-block;
@@ -132,6 +137,7 @@ input{
 				<p><a href='#/quizlet1'><b>quizlet 1<b></a>  |  <a href='#/quizlet2'><b>quizlet 2</b></a></p>
 			</div>
 			
+			<hr>
 			<div id='lookUp' ng-controller="searchFunction">
 				<!-- https://ciphertrick.com/2015/02/07/live-search-using-custom-filter-in-angular-js/ -->
 				<h3><b> search by: </b></h3>
