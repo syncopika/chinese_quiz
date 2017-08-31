@@ -107,7 +107,7 @@ controllers.controller('quizlet1', ['$scope', '$http', function($scope, $http){
 					if(pinyinAnswer.indexOf(ch.value) >= 0){                                            
 						//show "CORRECT!" in view
 						response.textContent = "CORRECT! ^_^";
-						response.style.color = "#23e000";
+						response.style.color = "#1eb701";
 					}else{
 						response.textContent = "INCORRECT";
 						response.style.color = "#e60008";

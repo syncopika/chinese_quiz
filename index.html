@@ -21,11 +21,14 @@
 <style>
 body{
 	font-family: 'MingLiU';
-	background-color: #d6dde3;
+	/*background-color: #9acaf4;*/
 	color: #171d22;
 }
 option{
 	color: #d6eae3;
+}
+p{
+	font-size: 18px;
 }
 select, option{
 	color: #000;
@@ -73,7 +76,27 @@ select{
 	width: 100%;
 	text-align: center;
 }
-
+#leftBox{
+	text-align: center;
+}
+#searchOption input{
+	display: inline-block;
+}
+#searchResults li{
+	list-style-type: none;
+	border: 1px dotted #000;
+}
+#searchResults p{
+	margin: 0;
+	padding: 0;
+}
+ul{
+	padding: 0;
+	margin-top: 10px;
+}
+input{
+	padding: 2px;
+}
 @media screen and (max-width: 990px) and (min-width: 760px){
 	.column{
 		width: 33%;
@@ -94,23 +117,49 @@ select{
 		https://en.wikisource.org/wiki/Translation:List_of_Frequently_Used_Characters_in_Modern_Chinese
 	-->
 	
-	<div class='container'>
+	<div class='container-fluid'>
 		
-		<div id='header'>
-			<h1> Chinese quiz app (mandarin) <h1>
-			<p> test your knowledge of Chinese characters! </p>
-		</div>
-		
-		<hr>
-		
-		<div id='nav'>
-			<p><a href='#/quizlet1'><b>quizlet 1<b></a>  |  <a href='#/quizlet2'><b>quizlet 2</b></a></p>
-		</div>
-		
-		<div id='content' ng-view>
-		
-		<!-- this is where the content changes -->
+		<div id='leftBox' class='col-md-3 col-lg-3 col-sm-12'>
+			<div id='header'>
+				<h2><b> Chinese quiz! </b><h2>
+				<h3> (Mandarin / 普通話)</h3>
+				<p> test your knowledge of Chinese characters! </p>
+			</div>
 			
+			<hr>
+			
+			<div id='nav'>
+				<p><a href='#/quizlet1'><b>quizlet 1<b></a>  |  <a href='#/quizlet2'><b>quizlet 2</b></a></p>
+			</div>
+			
+			<div id='lookUp' ng-controller="searchFunction">
+				<!-- https://ciphertrick.com/2015/02/07/live-search-using-custom-filter-in-angular-js/ -->
+				<h3><b> search by: </b></h3>
+				
+				<div id='searchOption'>
+					<input type='radio' ng-model='searchChoice' value='character'><label>character</label> 
+					<input type='radio' ng-model='searchChoice' value='definition'><label>definition</label> 
+					<input type='radio' ng-model='searchChoice' value='pinyin'><label>pinyin</label> 
+				</div>
+				
+				<input type='text' id='findChar' ng-model='searchChar'></input>
+				
+				<br>
+				
+				<ul id='searchResults'>
+					<!-- you can use 'this' to represent the local scope! can access scope variables this way -->
+					<li ng-repeat="char in characters | searchByChar: searchChar:this">
+						<p> {{ char.value }} </p>
+						<p> {{ char.pinyin }} </p>
+						<p> {{ char.definition }} </p>
+					</li>
+				</ul>
+				
+			</div>
+		</div>
+		
+		<div id='content' class='col-md-9 col-lg-9 col-sm-12' ng-view>
+			<!-- this is where the content changes -->		
 		</div>
 		
 	</div>

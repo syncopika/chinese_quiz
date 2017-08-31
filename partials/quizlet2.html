@@ -24,18 +24,18 @@
 .left{
 	margin-bottom: 2%;
 }
-
+.char{
+	z-index: 100;
+}
 .char, .right{
 	border: 1px solid #000;
 	border-radius: 5px;
+	background-color: #bdcfed;
 }
 
-#info{
-	display: block;
+.info{
 	margin: 0 auto;
 	padding: 5px;
-}
-#info p{
 	font-size: 18px;
 }
 
@@ -66,18 +66,14 @@
 	
 		<div ng-cloak ng-repeat="pair in pairs" class='row' id='main'>
 			
-			<div class='col-xs-4 col-xs-offset-2 left'>
-				<div id='char' class="char">
+			<div class='left col-xs-4 col-xs-offset-2'>
+				<div class="char">
 					<h1 ng-cloak> {{ pair[0].value }} </h1>
 				</div>
 			</div>
 			
-			<div class='col-xs-4'>
-			</div>
-			
-			<br>
-			<div class='col-xs-4 right'>
-				<div id='info' class='info' ng-model='testChoice'>
+			<div class='right col-xs-4'>
+				<div class='info' ng-model='testChoice'>
 					<p ng-cloak> {{ pair[1][testChoice] }} </p>
 				</div>
 			</div>
